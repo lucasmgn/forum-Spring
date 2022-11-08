@@ -71,6 +71,10 @@ public class Usuario implements UserDetails {
         this.senha = senha;
     }
 
+    public List<Perfil> getPerfis() {
+        return perfis;
+    }
+
     //Devolvendo coleções do perfil do usuário
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

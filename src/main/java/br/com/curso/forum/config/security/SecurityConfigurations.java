@@ -31,6 +31,7 @@ public class SecurityConfigurations {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+//    deve ser utilizada apenas na lógica de autenticação via username/password, para a geração do token.
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -51,6 +52,8 @@ public class SecurityConfigurations {
     * Como a autenticação é via token, a api está livre desse tipo de ataque
     *
     * ".sessionCreationPolicy(SessionCreationPolicy.STATELESS)", que a politica de sessao é por token
+    *
+    * ".addFilterBefore" para adicionar o filtro antes do UsernamePasswordAuthenticationFilter.class
     * */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -62,10 +65,10 @@ public class SecurityConfigurations {
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//                .and()
-//                .addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository),
-//                        UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository),
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
