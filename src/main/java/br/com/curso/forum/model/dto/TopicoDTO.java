@@ -1,6 +1,7 @@
 package br.com.curso.forum.model.dto;
 
 import br.com.curso.forum.model.*;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,8 +21,8 @@ public class TopicoDTO {
         this.dataCriacao = topico.getDataCriacao();
     }
 
-    public static List<TopicoDTO> converter(List<Topico> topicos) {
-        return topicos.stream().map(TopicoDTO::new).collect(Collectors.toList());
+    public static Page<TopicoDTO> converter(Page<Topico> topicos) {
+        return topicos.map(TopicoDTO::new); // pegando cada registro de Page de Topico e transformando para topico DTO
     }
 
     public Long getId() {

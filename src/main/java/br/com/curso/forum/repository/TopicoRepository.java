@@ -2,6 +2,8 @@ package br.com.curso.forum.repository;
 
 import br.com.curso.forum.model.Topico;
 import br.com.curso.forum.model.dto.TopicoDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +19,7 @@ public interface TopicoRepository extends JpaRepository <Topico, Long>{
     O Spring monta a query
     find by entidade Curso a propriedade nome
      */
-    List<Topico> findByCursoNome(String nomeCurso);
+    Page<Topico> findByCursoNome(String nomeCurso, Pageable pageable);
 
 
     //Se eu não quiser utilizar o findBy, eu terei que construir a minha prorpria query

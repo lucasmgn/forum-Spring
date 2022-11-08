@@ -1,4 +1,4 @@
-package br.com.curso.forum.model.dto.input;
+package br.com.curso.forum.model.dto.form;
 
 import br.com.curso.forum.model.Curso;
 import br.com.curso.forum.model.Topico;
@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class TopicoInputDTO {
+public class TopicoForm {
 
     @NotNull
     @NotEmpty
