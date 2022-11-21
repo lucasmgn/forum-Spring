@@ -7,11 +7,13 @@ import br.com.curso.forum.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @Configuration
+@Profile("prod")
 public class SecurityConfigurations {
 
     @Autowired
@@ -43,17 +46,24 @@ public class SecurityConfigurations {
     }
 
     /*
+    * Na versão 2.7 do spring ficou sendo utilizado a classe dessa forma
+    *
     * Tudo o que for ".antMatchers(HttpMethod.GET, "/topicos").permitAll()", será permitido no método GET
     * não vai exigir autentificação
     *
     *".anyRequest().authenticated()", que todas as outras requisições precisam estar autenticadas, tem (acesso restrito)
     *
-    * Csrf é uma abreviação para "cross-site request forgery", que é um tipo de ataque hacker que acontece em aplicações web.
+    * Csrf é uma abreviação para "cross-site request forgery", sendo um tipo de ataque hacker que acontece em aplicações web.
     * Como a autenticação é via token, a api está livre desse tipo de ataque
     *
     * ".sessionCreationPolicy(SessionCreationPolicy.STATELESS)", que a politica de sessao é por token
     *
     * ".addFilterBefore" para adicionar o filtro antes do UsernamePasswordAuthenticationFilter.class
+    *
+    * remover o .permitAll() da url actuator, quando estiver em produção (expõe informações impoerantes)
+    *
+    * .antMatchers(HttpMethod.DELETE, "/topicos/*").hasRole("MODERADOR"), só pode deletar um topico se tiver
+    * o perfil moderador
     * */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -62,6 +72,8 @@ public class SecurityConfigurations {
                 .antMatchers(HttpMethod.GET,"/topicos/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
                 .antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/topicos/*").hasRole("MODERADOR")
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable()
@@ -69,7 +81,18 @@ public class SecurityConfigurations {
                 .and()
                 .addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository),
                         UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
+    }
+
+    //Configuração para utilizar o swagger
+    //Static resources configuration (css, js, img, etc.)
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .antMatchers("/**.html",
+                        "/v2/api-docs",
+                        "/webjars/**",
+                        "/configuration/**",
+                        "/swagger-resources/**");
     }
 }

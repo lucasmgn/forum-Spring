@@ -1,4 +1,11 @@
 INSERT INTO USUARIO(nome, email, senha) VALUES('Aluno', 'lucas@gmail.com', '$2a$10$DDWGaOMdvTdGfxJBh4LxV..MkAUsqQLS1IaAIkcaW3yz44dS3sNs6');
+INSERT INTO USUARIO(nome, email, senha) VALUES('Moderador', 'moderador@gmail.com', '$2a$10$DDWGaOMdvTdGfxJBh4LxV..MkAUsqQLS1IaAIkcaW3yz44dS3sNs6');
+
+INSERT INTO PERFIL(nome) VALUES('ROLE_ALUNO'); -- O Spring-Security tem um padrão "ROLE_NOME"
+INSERT INTO PERFIL(nome) VALUES('ROLE_MODERADOR'); -- O Spring-Security tem um padrão "ROLE_NOME"
+
+INSERT INTO USUARIO_PERFIS(usuario_id, perfis_id) VALUES(1, 1);
+INSERT INTO USUARIO_PERFIS(usuario_id, perfis_id) VALUES(2, 2);
 
 INSERT INTO CURSO(nome, categoria) VALUES('Spring Boot', 'Programação');
 INSERT INTO CURSO(nome, categoria) VALUES('HTML 5', 'Front-end');

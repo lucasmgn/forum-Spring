@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,7 +21,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -41,7 +38,7 @@ public class TopicosController {
     * Para fazer paginação no spring.data
     * Caso eu não informe nenhum parametro para ordenação ou paginação
     * posso deixar o Default @PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10)
-    * Cahce é para ser utilizado em tabelas mais estáticas, que geralmente não atualiza
+    * Cahce é para utilizar em tabelas mais estáticas, que geralmente não atualiza
     * */
     @GetMapping
     @Cacheable(value = "listaDeTopicos")
@@ -94,6 +91,7 @@ public class TopicosController {
         return ResponseEntity.notFound().build();
     }
 
+    //Quando for chamado, o spring irá verificar, implementação de segurança na classe SecurityConfigurations
     @DeleteMapping("/{id}")
     @Transactional
     @CacheEvict(value = "listaDeTopicos", allEntries = true)
