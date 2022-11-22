@@ -38,6 +38,7 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!--Essa dependencia ja possui o junit-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
